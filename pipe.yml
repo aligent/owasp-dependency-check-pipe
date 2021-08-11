@@ -1,0 +1,10 @@
+name: OWASP Dependency Check Pipe
+image: aligent/owasp-dependency-check
+description: This pipe is used to perform OWASP dependency checks
+repository: git@bitbucket.org:aligent/owasp-dependency-check-pipe.git 
+maintainer: john.smith@aligent.com.au
+tags:
+    - bitbucket-pipelines
+    - pipes
+    - bash
+  
