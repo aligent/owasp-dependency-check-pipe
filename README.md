@@ -1,6 +1,6 @@
 # OWASP Dependency Check Pipe
 
-This pipe is used to perform OWASP dependency checks.
+This pipe is used to perform OWASP dependency checks using [jeremylong/DependencyCheck](https://github.com/jeremylong/DependencyCheck)
 
 ## YAML Definition
 
@@ -28,4 +28,6 @@ Add the following your `bitbucket-pipelines.yml` file:
 The following command can be used to invoke the pipe locally:
 Commits published to the `main` branch  will trigger an automated build.
 
-```docker run --env SCAN_PATHS=./composer.json -v $PWD:/build aligent/owasp-depencdency-check-pipe```
+```
+docker run -e CVSS_FAIL_LEVEL=1 -e BITBUCKET_REPO_FULL_NAME=test -e SCAN_PATH=./composer.lock -v $PWD:/build --workdir=/build aligent/owasp-dependency-check-pipe
+```
