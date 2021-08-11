@@ -12,7 +12,7 @@ Add the following your `bitbucket-pipelines.yml` file:
           script:
             - pipe: docker:aligent/owasp-dependency-check-pipe
               variables:
-                SCAN_PATH: "./composer.json"
+                SCAN_PATH: "./composer.lock"
                 CVSS_FAIL_LEVEL: "1"
 ```
 ## Variables
