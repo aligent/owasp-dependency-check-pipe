@@ -19,7 +19,8 @@ Add the following your `bitbucket-pipelines.yml` file:
 
 | Variable              | Usage                                                       |
 | --------------------- | ----------------------------------------------------------- |
-| SCAN_PATH             | Relative paths to scan. I.e composer.lock, package-lock.json |
+| SCAN_PATH             | Relative paths to scan. i.e composer.lock, package-lock.json |
+| SUPPRESSION_FILE_PATH | (Option) Path to a [suppression list](https://jeremylong.github.io/DependencyCheck/general/suppression.html) |
 | CVSS_FAIL_LEVEL       | If the score set between 0 and 10 the exit code from dependency-check will indicate if a vulnerability with a CVSS score equal to or higher was identified. |
 
 ## Development
