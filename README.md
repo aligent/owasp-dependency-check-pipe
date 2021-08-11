@@ -12,15 +12,15 @@ Add the following your `bitbucket-pipelines.yml` file:
           script:
             - pipe: docker:aligent/owasp-dependency-check-pipe
               variables:
-                SCAN_PATHS: "./composer.json"
-                EXPERIMENTAL: "TRUE"
+                SCAN_PATH: "./composer.json"
+                CVSS_FAIL_LEVEL: "1"
 ```
 ## Variables
 
 | Variable              | Usage                                                       |
 | --------------------- | ----------------------------------------------------------- |
-| SCAN_PATHS            | Comma separated list of relative paths to scan |
-| EXPERIMENTAL          | (Optional) Enable OWASP dependency check experimental features |
+| SCAN_PATH             | Relative paths to scan. I.e composer.lock, package-lock.json |
+| CVSS_FAIL_LEVEL       | If the score set between 0 and 10 the exit code from dependency-check will indicate if a vulnerability with a CVSS score equal to or higher was identified. |
 
 ## Development
 
