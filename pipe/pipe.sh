@@ -12,11 +12,10 @@ run_owasp_checks() {
      OWASP_PATH="/usr/share/dependency-check/bin/dependency-check.sh"
 
      if [[ -z "${SUPPRESSION_FILE_PATH}" ]]; then
-          ${OWASP_PATH} --format JUNIT --project ${BITBUCKET_REPO_FULL_NAME} --enableExperimental --out ./test-results/ -s ${SCAN_PATH} --junitFailOnCVSS ${CVSS_FAIL_LEVEL} --failOnCVSS ${CVSS_FAIL_LEVEL}
+          ${OWASP_PATH} --format JUNIT --format HTML --project ${BITBUCKET_REPO_FULL_NAME} --enableExperimental --out ./test-results/ -s ${SCAN_PATH} --junitFailOnCVSS ${CVSS_FAIL_LEVEL} --failOnCVSS ${CVSS_FAIL_LEVEL}
      else
-          ${OWASP_PATH} --format JUNIT --project ${BITBUCKET_REPO_FULL_NAME} --enableExperimental --out ./test-results/ -s ${SCAN_PATH} --junitFailOnCVSS ${CVSS_FAIL_LEVEL} --failOnCVSS ${CVSS_FAIL_LEVEL} --suppression ${SUPPRESSION_FILE_PATH}
+          ${OWASP_PATH} --format JUNIT --format HTML --project ${BITBUCKET_REPO_FULL_NAME} --enableExperimental --out ./test-results/ -s ${SCAN_PATH} --junitFailOnCVSS ${CVSS_FAIL_LEVEL} --failOnCVSS ${CVSS_FAIL_LEVEL} --suppression ${SUPPRESSION_FILE_PATH}
      fi
-
 }
 
 run_owasp_checks
