@@ -19,5 +19,6 @@ run_owasp_checks() {
      fi
 }
 
+validate
 run_owasp_checks
 
