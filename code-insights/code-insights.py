@@ -12,7 +12,7 @@ PROXIES = {"http": 'http://host.docker.internal:29418'}
 DEBUG = os.getenv('DEBUG')
 
 def create_report(title, details, report_type, report_id, reporter, result, data):
-    url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}"
+    url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}/test-report"
     body = { 
             "title": details,
             "details": title,
