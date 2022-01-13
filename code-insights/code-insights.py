@@ -8,7 +8,7 @@ BITBUCKET_REPO_SLUG = os.getenv('BITBUCKET_REPO_SLUG')
 BITBUCKET_COMMIT = os.getenv('BITBUCKET_COMMIT')
 BITBUCKET_PIPELINE_UUID = os.getenv('BITBUCKET_PIPELINE_UUID')
 BITBUCKET_STEP_UUID = os.getenv('BITBUCKET_STEP_UUID')
-PROXIES = {"http": 'http://localhost:29418'}
+PROXIES = {"http": 'http://host.docker.internal:29418'}
 
 def create_report(title, details, report_type, report_id, reporter, result, data):
     url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}"
