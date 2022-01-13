@@ -11,7 +11,7 @@ RUN chmod a+x /*.sh
 USER 1000
 RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly
 
-# Install python/pip
+# Install python environment
 USER root 
 COPY ./code-insights /usr/bin/code-insights
 ENV PYTHONUNBUFFERED=1
@@ -25,7 +25,5 @@ RUN chown 1000 /usr/bin/code-insights
 # Install python code-insight dependencies 
 USER 1000
 RUN cd /usr/bin/code-insights && pipenv install
-RUN cd /usr/bin/code-insights && pipenv run code-insights
-
 
 ENTRYPOINT ["/pipe.sh"]

@@ -30,4 +30,5 @@ upload_report() {
 validate
 run_owasp_checks
 upload_report
+# Return the exit code from run_owasp_checks
 exit $EXIT_CODE
