@@ -24,7 +24,7 @@ run_owasp_checks() {
 }
 
 upload_report() {
-     cd /usr/bin/code-insights && pipenv run code-insights create-report "Dependency Scan" "OWASP Depenency scan results" "SECURITY" "owasp-dependency-check-pipe" $OLDPWD/${OUTPUT_PATH}dependency-check-junit.xml
+     cd /usr/bin/code-insights && pipenv run code-insights junit-report "OWASP Dependency Scan" "Results produced when scanning ${SCAN_PATH} known OWASP vulnerabilities." "SECURITY" "owasp-dependency-check-pipe" $OLDPWD/${OUTPUT_PATH}dependency-check-junit.xml $OLDPWD/$SCAN_PATH
 }
 
 validate

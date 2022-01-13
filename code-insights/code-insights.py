@@ -11,22 +11,26 @@ BITBUCKET_STEP_UUID = os.getenv('BITBUCKET_STEP_UUID')
 PROXIES = {"http": 'http://host.docker.internal:29418'}
 DEBUG = os.getenv('DEBUG')
 
-def create_report(title, details, report_type, report_id, reporter, result, data):
-    url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}/test-report"
+# Creates a Code Insights report via API
+def create_report(title, details, report_type, report_id, reporter, result, link, data):
+    url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}"
     body = { 
-            "title": details,
-            "details": title,
+            "title": title,
+            "details": details,
             "report_type": report_type,
             "reporter": reporter,
-            "link": f"https://bitbucket.org/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/addon/pipelines/home#!/results/{BITBUCKET_PIPELINE_UUID}/steps/{BITBUCKET_STEP_UUID}",
+            "link": link,
             "result": result,
             "data": data
             }
+    if DEBUG:
+        print(body)
     r = requests.put(url=url, json=body, proxies=PROXIES)
     if not r.ok:
         print(f"Failed to create report {title}")
         print(r.text)
 
+# Creates a Code Insights annotation via API
 def create_annotation(title, summary, severity, path, line, reporter, report_id, annotation_type, annotation_id):
     url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}/annotations/{reporter}-{annotation_id}"
     body = { 
@@ -44,7 +48,8 @@ def create_annotation(title, summary, severity, path, line, reporter, report_id,
         print(f"Failed to create annotation {title}")
         print(r.text)
 
-def read_results_from_file(file):
+# Parses a Junit file and returns all errors
+def read_failures_from_file(file):
     from junitparser import JUnitXml
 
     results = []
@@ -58,12 +63,13 @@ def read_results_from_file(file):
 
     return results
 
-def build_report_data(result):
+# Builds a report given a number of failures
+def build_report_data(failure_count):
     report_data = [
             {
                 "title": 'Failures',
                 "type": 'NUMBER',
-                "value": len(result)
+                "value": failure_count
                 }
             ]
 
@@ -78,18 +84,22 @@ create_parser.add_argument('details', type=str)
 create_parser.add_argument('report_type', type=str)
 create_parser.add_argument('reporter', type=str)
 create_parser.add_argument('file', type=str)
+create_parser.add_argument('package_file', type=str)
 
 args = parser.parse_args()
 
 
-if args.cmd == 'create-report':
-    print(f"Creating Report")
-    results = read_results_from_file(args.file)
+if args.cmd == 'junit-report':
+    print(f"Creating report from {args.file}")
+    failures = read_failures_from_file(args.file)
+
+    report_id = str(uuid.uuid4())
     
     create_report(args.title,
             args.details,
             args.report_type,
-            str(uuid.uuid4()),
+            report_id,
             args.reporter,
-            "FAILED" if len(results) else "PASSED",
-            build_report_data(results))
+            "FAILED" if len(failures) else "PASSED",
+            f"https://bitbucket.org/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/addon/pipelines/home#!/results/{BITBUCKET_PIPELINE_UUID}/steps/{BITBUCKET_STEP_UUID}/test-report",
+            build_report_data(len(failures))
