@@ -9,6 +9,7 @@ BITBUCKET_COMMIT = os.getenv('BITBUCKET_COMMIT')
 BITBUCKET_PIPELINE_UUID = os.getenv('BITBUCKET_PIPELINE_UUID')
 BITBUCKET_STEP_UUID = os.getenv('BITBUCKET_STEP_UUID')
 PROXIES = {"http": 'http://host.docker.internal:29418'}
+DEBUG = os.getenv('DEBUG')
 
 def create_report(title, details, report_type, report_id, reporter, result, data):
     url=f"http://api.bitbucket.org/2.0/repositories/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/commit/{BITBUCKET_COMMIT}/reports/{reporter}-{report_id}"
@@ -36,6 +37,8 @@ def create_annotation(title, summary, severity, path, line, reporter, report_id,
             "path": path,
             "line": line
             }
+    if DEBUG:
+        print(body)
     r = requests.put(url=url, json=body, proxies=PROXIES)
     if not r.ok:
         print(f"Failed to create annotation {title}")
