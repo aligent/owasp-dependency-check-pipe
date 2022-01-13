@@ -24,7 +24,7 @@ run_owasp_checks() {
 }
 
 upload_report() {
-     python3 /usr/bin/code-insights/code-insights.py junit-report "OWASP Dependency Scan" "Results produced when scanning ${SCAN_PATH} known OWASP vulnerabilities." "SECURITY" "owasp-dependency-check-pipe" $OLDPWD/${OUTPUT_PATH}dependency-check-junit.xml $OLDPWD/$SCAN_PATH
+     python3 /usr/bin/code-insights/code-insights.py junit-report "OWASP Dependency Scan" "Results produced when scanning ${SCAN_PATH} known OWASP vulnerabilities." "SECURITY" "owasp-dependency-check-pipe" ${OUTPUT_PATH}dependency-check-junit.xml $SCAN_PATH
 }
 
 validate
