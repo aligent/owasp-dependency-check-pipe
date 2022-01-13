@@ -77,7 +77,7 @@ def build_report_data(failure_count):
 
 parser = argparse.ArgumentParser(description='Interface with the Bitbucket Code Insights API')
 subparsers = parser.add_subparsers(dest="cmd")
-create_parser = subparsers.add_parser('create-report')
+create_parser = subparsers.add_parser('junit-report')
 
 create_parser.add_argument('title', type=str)
 create_parser.add_argument('details', type=str)
@@ -102,4 +102,4 @@ if args.cmd == 'junit-report':
             args.reporter,
             "FAILED" if len(failures) else "PASSED",
             f"https://bitbucket.org/{BITBUCKET_WORKSPACE}/{BITBUCKET_REPO_SLUG}/addon/pipelines/home#!/results/{BITBUCKET_PIPELINE_UUID}/steps/{BITBUCKET_STEP_UUID}/test-report",
-            build_report_data(len(failures))
+            build_report_data(len(failures)))

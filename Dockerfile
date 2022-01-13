@@ -17,13 +17,7 @@ COPY ./code-insights /usr/bin/code-insights
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3
 RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
-RUN pip3 install pipenv
-RUN python3 --version
-RUN chown 1000 /usr/bin/code-insights
+RUN pip3 install --no-cache --upgrade pip setuptools junitparser requests
 
-# Install python code-insight dependencies 
 USER 1000
-RUN cd /usr/bin/code-insights && pipenv install
-
 ENTRYPOINT ["/pipe.sh"]
