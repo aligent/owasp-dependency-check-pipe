@@ -3,7 +3,7 @@
 import os
 import subprocess
 import uuid
-from codeinsights import CodeInsights
+from bitbucket import Bitbucket
 from bitbucket_pipes_toolkit import Pipe, get_logger
 
 OWASP_PATH="/usr/share/dependency-check/bin/dependency-check.sh"
@@ -52,18 +52,46 @@ class OWASPDependencyCheck(Pipe):
 
         self.owasp_failure = bool(owasp.returncode)
 
+
     def upload_report(self):
+
+        # Parses a Junit file and returns all errors
+        def read_failures_from_file(file):
+            from junitparser import JUnitXml
+
+            results = []
+            xml = JUnitXml.fromfile(file)
+            if not xml.failures: return []
+            for suite in xml:
+                # handle suites
+                if suite.failures == 0: continue
+                for case in suite:
+                    results.append(case.result)
+
+            return results
+
+        # Builds a report given a number of failures
+        def build_report_data(failure_count):
+            report_data = [
+                    {
+                        "title": 'Failures',
+                        "type": 'NUMBER',
+                        "value": failure_count
+                        }
+                    ]
+
+            return report_data
+
         report_id = str(uuid.uuid4())
 
-        code_insights_api = CodeInsights(self.bitbucket_workspace, 
-                self.bitbucket_repo_slug, 
-                self.bitbucket_commit)
+        bitbucket_api = Bitbucket(proxies={"http": 'http://host.docker.internal:29418'})
 
-        failures = CodeInsights.read_failures_from_file(
+
+        failures = read_failures_from_file(
                 f"{self.out_path}dependency-check-junit.xml"
                 )
 
-        code_insights_api.create_report(
+        bitbucket_api.create_report(
                 "OWASP Dependency Scan",
                 "Results produced when scanning {self.scan_path} for known OWASP vulnerabilities." ,
                 "SECURITY" ,
@@ -71,7 +99,10 @@ class OWASPDependencyCheck(Pipe):
                 "owasp-dependency-check-pipe" ,
                 "FAILED" if len(failures) else "PASSED",
                 f"https://bitbucket.org/{self.bitbucket_workspace}/{self.bitbucket_repo_slug}/addon/pipelines/home#!/results/{self.bitbucket_pipeline_uuid}/steps/{self.bitbucket_step_uuid}/test-report",
-                CodeInsights.build_report_data(len(failures))
+                build_report_data(len(failures)),
+                self.bitbucket_workspace,
+                self.bitbucket_repo_slug,
+                self.bitbucket_commit
                 )
 
 
