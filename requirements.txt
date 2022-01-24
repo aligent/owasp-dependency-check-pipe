@@ -1,3 +1,4 @@
 bitbucket-pipes-toolkit==3.2.1
+git+https://github.com/aligent/bitbucket-manager@feature/code-insight-reports
 junitparser
 requests
