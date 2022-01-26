@@ -1,0 +1,3 @@
+bitbucket-pipes-toolkit==3.2.1
+junitparser
+requests
