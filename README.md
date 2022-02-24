@@ -29,7 +29,7 @@ Add the following your `bitbucket-pipelines.yml` file:
 The following command with world-writable `test-results` directory under project root can be used to invoke the pipe locally:
 
 ```
-docker run -e CVSS_FAIL_LEVEL=1 -e BITBUCKET_REPO_FULL_NAME=test -e SCAN_PATH=./composer.lock -v $PWD:/build --workdir=/build aligent/owasp-dependency-check-pipe
+docker run -e CVSS_FAIL_LEVEL=1 -e BITBUCKET_REPO_FULL_NAME=test -e SCAN_PATH=./composer.lock -v owasp_cache:/usr/share/dependency-check/data -v $PWD:/build --workdir=/build aligent/owasp-dependency-check-pipe
 ```
 
 Commits published to the `main` branch  will trigger an automated build.
