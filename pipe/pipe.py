@@ -38,16 +38,16 @@ class OWASPDependencyCheck(Pipe):
                 '--format', 'JUNIT',
                 '--format', 'HTML',
                 '--project', self.bitbucket_repo,
-                '--enableExperimental', 
-                '--out', self.out_path, 
+                '--enableExperimental',
+                '--out', self.out_path,
                 '-s', self.scan_path,
-                '--junitFailOnCVSS', self.cvss_fail_level, 
+                '--junitFailOnCVSS', self.cvss_fail_level,
                 '--failOnCVSS', self.cvss_fail_level]
         if self.suppression_path:
             owasp_command.append('--suppression')
             owasp_command.append(self.suppression_path)
 
-        owasp = subprocess.run(owasp_command, 
+        owasp = subprocess.run(owasp_command,
                 universal_newlines=True)
 
         self.owasp_failure = bool(owasp.returncode)
@@ -84,26 +84,27 @@ class OWASPDependencyCheck(Pipe):
 
         report_id = str(uuid.uuid4())
 
-        bitbucket_api = Bitbucket(proxies={"http": 'http://host.docker.internal:29418'})
+        if self.bitbucket_repo == 'Unknown Project':
+            bitbucket_api = Bitbucket(proxies={"http": 'http://host.docker.internal:29418'})
 
 
-        failures = read_failures_from_file(
-                f"{self.out_path}dependency-check-junit.xml"
-                )
+            failures = read_failures_from_file(
+                    f"{self.out_path}dependency-check-junit.xml"
+                    )
 
-        bitbucket_api.create_report(
-                "OWASP Dependency Scan",
-                "Results produced when scanning {self.scan_path} for known OWASP vulnerabilities." ,
-                "SECURITY" ,
-                report_id,
-                "owasp-dependency-check-pipe" ,
-                "FAILED" if len(failures) else "PASSED",
-                f"https://bitbucket.org/{self.bitbucket_workspace}/{self.bitbucket_repo_slug}/addon/pipelines/home#!/results/{self.bitbucket_pipeline_uuid}/steps/{self.bitbucket_step_uuid}/test-report",
-                build_report_data(len(failures)),
-                self.bitbucket_workspace,
-                self.bitbucket_repo_slug,
-                self.bitbucket_commit
-                )
+            bitbucket_api.create_report(
+                    "OWASP Dependency Scan",
+                    "Results produced when scanning {self.scan_path} for known OWASP vulnerabilities." ,
+                    "SECURITY" ,
+                    report_id,
+                    "owasp-dependency-check-pipe" ,
+                    "FAILED" if len(failures) else "PASSED",
+                    f"https://bitbucket.org/{self.bitbucket_workspace}/{self.bitbucket_repo_slug}/addon/pipelines/home#!/results/{self.bitbucket_pipeline_uuid}/steps/{self.bitbucket_step_uuid}/test-report",
+                    build_report_data(len(failures)),
+                    self.bitbucket_workspace,
+                    self.bitbucket_repo_slug,
+                    self.bitbucket_commit
+                    )
 
 
     def run(self):
