@@ -22,7 +22,7 @@ class OWASPDependencyCheck(Pipe):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scan_path = self.get_variable('SCAN_PATH')
-        self.suppression_path = self.get_variable('SUPPRESSION_FILE_PATH')
+        self.suppression_path = self.get_variable('SUPPRESSION_FILE_PATH') if self.get_variable('SUPPRESSION_FILE_PATH') else '/build/suppression.xml'
         self.cvss_fail_level = self.get_variable('CVSS_FAIL_LEVEL') if self.get_variable('CVSS_FAIL_LEVEL') else '1'
         self.out_path = self.get_variable('OUTPUT_PATH') if self.get_variable('OUTPUT_PATH') else './test-results/'
         self.bitbucket_repo = os.getenv('BITBUCKET_REPO_FULL_NAME') if os.getenv('BITBUCKET_REPO_FULL_NAME') else 'Unknown Project'
