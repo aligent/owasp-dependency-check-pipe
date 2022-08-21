@@ -43,7 +43,7 @@ class OWASPDependencyCheck(Pipe):
                 '-s', self.scan_path,
                 '--junitFailOnCVSS', self.cvss_fail_level,
                 '--failOnCVSS', self.cvss_fail_level]
-        if self.suppression_path and os.exists(self.suppression_path):
+        if self.suppression_path and os.path.exists(self.suppression_path):
             owasp_command.append('--suppression')
             owasp_command.append(self.suppression_path)
 
