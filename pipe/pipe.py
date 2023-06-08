@@ -14,6 +14,9 @@ schema = {
     'CVSS_FAIL_LEVEL': {'type': 'string', 'required': False},
     'SUPPRESSION_FILE_PATH': {'type': 'string', 'required': False},
     'OUTPUT_PATH': {'type': 'string', 'required': False},
+    'OSSINDEX_USERNAME': {'type': 'string', 'required': False},
+    'OSSINDEX_PASSWORD': {'type': 'string', 'required': False},
+    'DISABLE_OSSINDEX': {'type': 'boolean', 'required': False},
     }
 
 class OWASPDependencyCheck(Pipe):
@@ -24,9 +27,9 @@ class OWASPDependencyCheck(Pipe):
         super().__init__(*args, **kwargs)
         self.scan_path = self.get_variable('SCAN_PATH')
         self.suppression_path = self.get_variable('SUPPRESSION_FILE_PATH') if self.get_variable('SUPPRESSION_FILE_PATH') else './suppression.xml'
-        self.ossindexusername = self.get_variable('OSSINDEX_USERNAME') if self.get_variable('OSSINDEX_USERNAME')
-        self.ossindexpassword = self.get_variable('OSSINDEX_PASSWORD') if self.get_variable('OSSINDEX_PASSWORD')
-        self.disableOssIndex = True if self.get_variable('DISABLE_OSSINDEX') and self.get_variable('DISABLE_OSSINDEX').lower() == 'true'
+        self.ossindexusername = self.get_variable('OSSINDEX_USERNAME') if self.get_variable('OSSINDEX_USERNAME') else ''
+        self.ossindexpassword = self.get_variable('OSSINDEX_PASSWORD') if self.get_variable('OSSINDEX_PASSWORD') else ''
+        self.disableOssIndex = True if self.get_variable('DISABLE_OSSINDEX') and self.get_variable('DISABLE_OSSINDEX').lower() == 'true' else False
         self.cvss_fail_level = self.get_variable('CVSS_FAIL_LEVEL') if self.get_variable('CVSS_FAIL_LEVEL') else '1'
         self.out_path = self.get_variable('OUTPUT_PATH') if self.get_variable('OUTPUT_PATH') else './test-results/'
         self.bitbucket_repo = os.getenv('BITBUCKET_REPO_FULL_NAME') if os.getenv('BITBUCKET_REPO_FULL_NAME') else 'Unknown Project'
@@ -51,7 +54,7 @@ class OWASPDependencyCheck(Pipe):
             owasp_command.append('--suppression')
             owasp_command.append(self.suppression_path)
 
-        if self.ossindexusername and self.self.ossindexpassword:
+        if self.ossindexusername and self.ossindexpassword:
             owasp_command.append('--ossIndexUsername')
             owasp_command.append(self.ossindexusername)
             owasp_command.append('--ossIndexPassword')
