@@ -22,6 +22,9 @@ Add the following your `bitbucket-pipelines.yml` file:
 | SCAN_PATH             | Relative paths to scan. i.e composer.lock, package-lock.json |
 | CVSS_FAIL_LEVEL       | (Optional) If the score set between 0 and 10 the exit code from dependency-check will indicate if a vulnerability with a CVSS score equal to or higher was identified. |
 | SUPPRESSION_FILE_PATH | (Optional) Path to a [suppression list](https://jeremylong.github.io/DependencyCheck/general/suppression.html) |
+| DISABLE_OSSINDEX      | (Optional) Disable OSS Index Analysis. Boolean |
+| OSSINDEX_USERNAME      | (Optional) Provide OSS Index Username. Disregarded when DISABLE_OSSINDEX is set True |
+| OSSINDEX_PASSWORD      | (Optional) Provide OSS Index Password. Disregarded when DISABLE_OSSINDEX is set True |
 | OUTPUT_PATH           | (Optional) Path to output test results. |
 
 ## Development

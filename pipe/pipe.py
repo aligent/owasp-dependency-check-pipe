@@ -18,11 +18,15 @@ schema = {
 
 class OWASPDependencyCheck(Pipe):
     owasp_failure = False;
+    disableOssIndex = False;
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scan_path = self.get_variable('SCAN_PATH')
         self.suppression_path = self.get_variable('SUPPRESSION_FILE_PATH') if self.get_variable('SUPPRESSION_FILE_PATH') else './suppression.xml'
+        self.ossindexusername = self.get_variable('OSSINDEX_USERNAME') if self.get_variable('OSSINDEX_USERNAME')
+        self.ossindexpassword = self.get_variable('OSSINDEX_PASSWORD') if self.get_variable('OSSINDEX_PASSWORD')
+        self.disableOssIndex = True if self.get_variable('DISABLE_OSSINDEX') and self.get_variable('DISABLE_OSSINDEX').lower() == 'true'
         self.cvss_fail_level = self.get_variable('CVSS_FAIL_LEVEL') if self.get_variable('CVSS_FAIL_LEVEL') else '1'
         self.out_path = self.get_variable('OUTPUT_PATH') if self.get_variable('OUTPUT_PATH') else './test-results/'
         self.bitbucket_repo = os.getenv('BITBUCKET_REPO_FULL_NAME') if os.getenv('BITBUCKET_REPO_FULL_NAME') else 'Unknown Project'
@@ -46,6 +50,15 @@ class OWASPDependencyCheck(Pipe):
         if self.suppression_path and os.path.exists(self.suppression_path):
             owasp_command.append('--suppression')
             owasp_command.append(self.suppression_path)
+
+        if self.ossindexusername and self.self.ossindexpassword:
+            owasp_command.append('--ossIndexUsername')
+            owasp_command.append(self.ossindexusername)
+            owasp_command.append('--ossIndexPassword')
+            owasp_command.append(self.ossindexpassword)
+
+        if self.disableOssIndex == True:
+            owasp_command.append('--disableOssIndex')
 
         owasp = subprocess.run(owasp_command,
                 universal_newlines=True)
