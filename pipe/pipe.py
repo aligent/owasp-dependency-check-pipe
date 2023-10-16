@@ -35,8 +35,8 @@ class OWASPDependencyCheck(Pipe):
         self.bitbucket_repo = os.getenv('BITBUCKET_REPO_FULL_NAME') if os.getenv('BITBUCKET_REPO_FULL_NAME') else 'Unknown Project'
         self.bitbucket_workspace  = os.getenv('BITBUCKET_WORKSPACE')
         self.bitbucket_repo_slug = os.getenv('BITBUCKET_REPO_SLUG')
-        self.bitbucket_pipeline_uuid = os.getenv('BITBUCKET_PIPELINE_UUID')
-        self.bitbucket_step_uuid = os.getenv('BITBUCKET_STEP_UUID')
+        self.bitbucket_pipeline_uuid = os.getenv('BITBUCKET_PIPELINE_UUID').strip("{}")
+        self.bitbucket_step_uuid = os.getenv('BITBUCKET_STEP_UUID').strip("{}")
         self.bitbucket_commit = os.getenv('BITBUCKET_COMMIT')
 
     def run_owasp_check(self):
