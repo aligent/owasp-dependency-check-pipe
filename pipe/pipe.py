@@ -101,7 +101,10 @@ class OWASPDependencyCheck(Pipe):
         report_id = str(uuid.uuid4())
 
         if self.bitbucket_repo != 'Unknown Project':
-            bitbucket_api = Bitbucket(proxies={"http": 'http://host.docker.internal:29418'})
+            bitbucket_api = Bitbucket(
+                proxies={"http": 'http://host.docker.internal:29418'},
+                protocol="http"
+            )
 
 
             failures = read_failures_from_file(
