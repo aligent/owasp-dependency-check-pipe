@@ -4,6 +4,7 @@ import os
 import subprocess
 import uuid
 import warnings
+import logging
 from bitbucket import Bitbucket
 from bitbucket_pipes_toolkit import Pipe, get_logger
 
@@ -78,9 +79,11 @@ class OWASPDependencyCheck(Pipe):
             owasp_command.append('--disableOssIndex')
 
         if self.extra_args:
-            warnings.warn(f"Dependency check has been extended: {self.extra_args}", UserWarning)
             owasp_command.extend(self.extra_args.split())
 
+        logging.info(f"Running OWASP dependency check with command: {owasp_command}")
+
+        # Run the OWASP dependency check
         owasp = subprocess.run(owasp_command,
                 universal_newlines=True)
 
