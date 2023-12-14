@@ -3,6 +3,7 @@
 import os
 import subprocess
 import uuid
+import warnings
 from bitbucket import Bitbucket
 from bitbucket_pipes_toolkit import Pipe, get_logger
 
@@ -10,40 +11,53 @@ OWASP_PATH="/usr/share/dependency-check/bin/dependency-check.sh"
 
 logger = get_logger()
 schema = {
-    'SCAN_PATH': {'type': 'string', 'required': True},
-    'CVSS_FAIL_LEVEL': {'type': 'string', 'required': False},
-    'SUPPRESSION_FILE_PATH': {'type': 'string', 'required': False},
-    'OUTPUT_PATH': {'type': 'string', 'required': False},
-    'OSSINDEX_USERNAME': {'type': 'string', 'required': False},
-    'OSSINDEX_PASSWORD': {'type': 'string', 'required': False},
-    'DISABLE_OSSINDEX': {'type': 'boolean', 'required': False},
+    'SCAN_PATH': {'type': 'string', 'required': True, 'default': '.'},
+    'CVSS_FAIL_LEVEL': {'type': 'string', 'required': False, 'default': '1'},
+    'SUPPRESSION_FILE_PATH': {'type': 'string', 'required': False, 'default': './suppression.xml'},
+    'OUTPUT_PATH': {'type': 'string', 'required': False, 'default': './test-results/'},
+    'OSSINDEX_USERNAME': {'type': 'string', 'required': False, 'default': ''},
+    'OSSINDEX_PASSWORD': {'type': 'string', 'required': False, 'default': ''},
+    'DISABLE_OSSINDEX': {'type': 'boolean', 'required': False, 'default': False},
+    'EXTRA_ARGS': {'type': 'string', 'required': False, 'default': ''},
     }
 
 class OWASPDependencyCheck(Pipe):
-    owasp_failure = False;
+    owasp_failure   = False;
     disableOssIndex = False;
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.scan_path = self.get_variable('SCAN_PATH')
-        self.suppression_path = self.get_variable('SUPPRESSION_FILE_PATH') if self.get_variable('SUPPRESSION_FILE_PATH') else './suppression.xml'
-        self.ossindexusername = self.get_variable('OSSINDEX_USERNAME') if self.get_variable('OSSINDEX_USERNAME') else ''
-        self.ossindexpassword = self.get_variable('OSSINDEX_PASSWORD') if self.get_variable('OSSINDEX_PASSWORD') else ''
-        self.disableOssIndex = True if self.get_variable('DISABLE_OSSINDEX') and self.get_variable('DISABLE_OSSINDEX').lower() == 'true' else False
-        self.cvss_fail_level = self.get_variable('CVSS_FAIL_LEVEL') if self.get_variable('CVSS_FAIL_LEVEL') else '1'
-        self.out_path = self.get_variable('OUTPUT_PATH') if self.get_variable('OUTPUT_PATH') else './test-results/'
-        self.bitbucket_repo = os.getenv('BITBUCKET_REPO_FULL_NAME') if os.getenv('BITBUCKET_REPO_FULL_NAME') else 'Unknown Project'
-        self.bitbucket_workspace  = os.getenv('BITBUCKET_WORKSPACE')
-        self.bitbucket_repo_slug = os.getenv('BITBUCKET_REPO_SLUG')
-        self.bitbucket_pipeline_uuid = os.getenv('BITBUCKET_PIPELINE_UUID').strip("{}")
-        self.bitbucket_step_uuid = os.getenv('BITBUCKET_STEP_UUID').strip("{}")
-        self.bitbucket_commit = os.getenv('BITBUCKET_COMMIT')
+        self.scan_path              = self.get_variable('SCAN_PATH')
+        self.suppression_path       = self.get_variable('SUPPRESSION_FILE_PATH')
+        self.ossindexusername       = self.get_variable('OSSINDEX_USERNAME')
+        self.ossindexpassword       = self.get_variable('OSSINDEX_PASSWORD')
+        self.disableOssIndex        = self.get_variable('DISABLE_OSSINDEX')
+        self.cvss_fail_level        = self.get_variable('CVSS_FAIL_LEVEL')
+        self.out_path               = self.get_variable('OUTPUT_PATH')
+        self.bitbucket_repo         = os.getenv('BITBUCKET_REPO_FULL_NAME') if os.getenv('BITBUCKET_REPO_FULL_NAME') else 'Unknown Project'
+        self.bitbucket_workspace    = os.getenv('BITBUCKET_WORKSPACE')
+        self.bitbucket_repo_slug    = os.getenv('BITBUCKET_REPO_SLUG')
+        self.bitbucket_commit       = os.getenv('BITBUCKET_COMMIT')
+        self.extra_args             = self.get_variable('EXTRA_ARGS')
+        # Not mandatory to set these variables if you run the pipe locally
+        try:
+            self.bitbucket_pipeline_uuid    = os.getenv('BITBUCKET_PIPELINE_UUID').strip("{}")
+            self.bitbucket_step_uuid        = os.getenv('BITBUCKET_STEP_UUID').strip("{}")
+        except:
+            warnings.warn("Could not find pipeline or step UUIDs", UserWarning)
+
+    # Warning handler function
+    def user_warning(message, category, filename, lineno, file=None, line=None):
+        print(f"[WARN] {category.__name__}: {message} at {filename}:{lineno}")
+
+    warnings.showwarning = user_warning
 
     def run_owasp_check(self):
 
         owasp_command = [OWASP_PATH,
                 '--format', 'JUNIT',
                 '--format', 'HTML',
+                '--prettyPrint',
                 '--project', self.bitbucket_repo,
                 '--enableExperimental',
                 '--out', self.out_path,
@@ -62,6 +76,10 @@ class OWASPDependencyCheck(Pipe):
 
         if self.disableOssIndex == True:
             owasp_command.append('--disableOssIndex')
+
+        if self.extra_args:
+            warnings.warn(f"Dependency check has been extended: {self.extra_args}", UserWarning)
+            owasp_command.extend(self.extra_args.split())
 
         owasp = subprocess.run(owasp_command,
                 universal_newlines=True)
