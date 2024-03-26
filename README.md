@@ -26,6 +26,7 @@ Add the following your `bitbucket-pipelines.yml` file:
 | DISABLE_OSSINDEX      | (Optional) Disable OSS Index Analysis. Boolean |
 | OSSINDEX_USERNAME      | (Optional) Provide OSS Index Username. Disregarded when DISABLE_OSSINDEX is set True |
 | OSSINDEX_PASSWORD      | (Optional) Provide OSS Index Password. Disregarded when DISABLE_OSSINDEX is set True |
+| NVD_API_KEY |         | (Optional) Provide an API key for NVD. |
 | OUTPUT_PATH           | (Optional) Path to output test results. |
 | EXTRA_ARGS            | (Optional) Extra arguments to pass to dependency-check. i.e `--disableRetireJS` |
 
