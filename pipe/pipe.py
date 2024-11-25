@@ -20,12 +20,14 @@ schema = {
     'OSSINDEX_PASSWORD': {'type': 'string', 'required': False, 'default': ''},
     'NVD_API_KEY': {'type': 'string', 'required': False, 'default': ''},
     'DISABLE_OSSINDEX': {'type': 'boolean', 'required': False, 'default': False},
+    'UPDATE_DB': {'type': 'boolean', 'required': False, 'default': False},
     'EXTRA_ARGS': {'type': 'string', 'required': False, 'default': ''},
     }
 
 class OWASPDependencyCheck(Pipe):
     owasp_failure   = False;
     disableOssIndex = False;
+    updateDb = False;
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -33,7 +35,8 @@ class OWASPDependencyCheck(Pipe):
         self.suppression_path       = self.get_variable('SUPPRESSION_FILE_PATH')
         self.ossindexusername       = self.get_variable('OSSINDEX_USERNAME')
         self.ossindexpassword       = self.get_variable('OSSINDEX_PASSWORD')
-        self.nvdapikey             = self.get_variable('NVD_API_KEY')
+        self.nvdapikey              = self.get_variable('NVD_API_KEY')
+        self.updatedb               = self.get_variable('NVD_API_KEY')
         self.disableOssIndex        = self.get_variable('DISABLE_OSSINDEX')
         self.cvss_fail_level        = self.get_variable('CVSS_FAIL_LEVEL')
         self.out_path               = self.get_variable('OUTPUT_PATH')
@@ -81,6 +84,9 @@ class OWASPDependencyCheck(Pipe):
         if self.nvdapikey:
             owasp_command.append('--nvdApiKey')
             owasp_command.append(self.nvdapikey)
+
+        if not self.updateDb:
+            owasp_command.append('--noupdate')
 
         if self.disableOssIndex == True:
             owasp_command.append('--disableOssIndex')
