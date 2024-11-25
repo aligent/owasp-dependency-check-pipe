@@ -36,7 +36,7 @@ class OWASPDependencyCheck(Pipe):
         self.ossindexusername       = self.get_variable('OSSINDEX_USERNAME')
         self.ossindexpassword       = self.get_variable('OSSINDEX_PASSWORD')
         self.nvdapikey              = self.get_variable('NVD_API_KEY')
-        self.updatedb               = self.get_variable('NVD_API_KEY')
+        self.updatedb               = self.get_variable('UPDATE_DB')
         self.disableOssIndex        = self.get_variable('DISABLE_OSSINDEX')
         self.cvss_fail_level        = self.get_variable('CVSS_FAIL_LEVEL')
         self.out_path               = self.get_variable('OUTPUT_PATH')
