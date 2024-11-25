@@ -58,6 +58,7 @@ class OWASPDependencyCheck(Pipe):
     def run_owasp_check(self):
 
         owasp_command = [OWASP_PATH,
+                '--noupdate',
                 '--format', 'JUNIT',
                 '--format', 'HTML',
                 '--prettyPrint',
