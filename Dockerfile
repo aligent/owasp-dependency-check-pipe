@@ -3,6 +3,7 @@ FROM owasp/dependency-check
 ARG NVD_API_KEY
 ARG OSSINDEX_USERNAME
 ARG OSSINDEX_PASSWORD
+ARG UPDATE_DB
 
 USER root
 RUN apk add wget bash
@@ -19,9 +20,9 @@ USER 1000
 COPY requirements.txt /
 RUN python3 -m pip install --no-cache-dir -r /requirements.txt
 
-# Initialise OWASP DB
+# Initialise OWASP DB if UPDATE_DB = true
 # https://github.com/jeremylong/DependencyCheck/blob/2d5fbd9719ddd55a59aea8c234c11e43eaafe26d/Dockerfile#L50
-# RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey ${NVD_API_KEY} --ossIndexUsername ${OSSINDEX_USERNAME} --ossIndexPassword ${OSSINDEX_PASSWORD} --nvdMaxRetryCount 20 --nvdApiDelay 6000
+RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey ${NVD_API_KEY} --ossIndexUsername ${OSSINDEX_USERNAME} --ossIndexPassword ${OSSINDEX_PASSWORD} --nvdMaxRetryCount 20 --nvdApiDelay 6000
 
 COPY pipe /
 USER root
