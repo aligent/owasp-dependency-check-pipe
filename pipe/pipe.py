@@ -139,25 +139,27 @@ class OWASPDependencyCheck(Pipe):
                 protocol="http"
             )
 
+            fname = f"{self.out_path}dependency-check-junit.xml"
 
-            failures = read_failures_from_file(
-                    f"{self.out_path}dependency-check-junit.xml"
-                    )
+            if os.path.isfile(fname):
+                failures = read_failures_from_file(fname)
 
-            bitbucket_api.create_report(
-                    "OWASP Dependency Scan",
-                    "Results produced when scanning {self.scan_path} for known OWASP vulnerabilities." ,
-                    "SECURITY" ,
-                    report_id,
-                    "owasp-dependency-check-pipe" ,
-                    "FAILED" if len(failures) else "PASSED",
-                    f"https://bitbucket.org/{self.bitbucket_workspace}/{self.bitbucket_repo_slug}/addon/pipelines/home#!/results/{self.bitbucket_pipeline_uuid}/steps/{self.bitbucket_step_uuid}/test-report",
-                    build_report_data(len(failures)),
-                    self.bitbucket_workspace,
-                    self.bitbucket_repo_slug,
-                    self.bitbucket_commit
-                    )
-
+                bitbucket_api.create_report(
+                        "OWASP Dependency Scan",
+                        "Results produced when scanning {self.scan_path} for known OWASP vulnerabilities." ,
+                        "SECURITY" ,
+                        report_id,
+                        "owasp-dependency-check-pipe" ,
+                        "FAILED" if len(failures) else "PASSED",
+                        f"https://bitbucket.org/{self.bitbucket_workspace}/{self.bitbucket_repo_slug}/addon/pipelines/home#!/results/{self.bitbucket_pipeline_uuid}/steps/{self.bitbucket_step_uuid}/test-report",
+                        build_report_data(len(failures)),
+                        self.bitbucket_workspace,
+                        self.bitbucket_repo_slug,
+                        self.bitbucket_commit
+                        )
+            else:
+                logging.error(f"OWASP Scan failed to generate a report.")
+                self.owasp_failure = True
 
     def run(self):
         super().run()
