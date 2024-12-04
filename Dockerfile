@@ -20,11 +20,12 @@ RUN python3 -m pip install --no-cache-dir -r /requirements.txt
 
 # Initialise OWASP DB if UPDATE_DB = true
 # https://github.com/jeremylong/DependencyCheck/blob/2d5fbd9719ddd55a59aea8c234c11e43eaafe26d/Dockerfile#L50
-RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_FEED:+--nvdDataFeed ${NVD_API_FEED}}
+RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_FEED:+--nvdDataFeed=${NVD_API_FEED}}
 
 COPY pipe /
 USER root
 RUN chmod a+x /*.py
 
 USER 1000
+
 ENTRYPOINT ["/pipe.py"]
