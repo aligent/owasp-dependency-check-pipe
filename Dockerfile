@@ -1,4 +1,4 @@
-FROM owasp/dependency-check
+FROM owasp/dependency-check:11.1.1
 
 ARG UPDATE_DB
 ARG NVD_API_FEED
