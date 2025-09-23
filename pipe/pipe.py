@@ -19,7 +19,7 @@ schema = {
     'OSSINDEX_USERNAME': {'type': 'string', 'required': False, 'default': ''},
     'OSSINDEX_PASSWORD': {'type': 'string', 'required': False, 'default': ''},
     'NVD_API_KEY': {'type': 'string', 'required': False, 'default': ''},
-    'DISABLE_OSSINDEX': {'type': 'boolean', 'required': False, 'default': False},
+    'DISABLE_OSSINDEX': {'type': 'boolean', 'required': False, 'default': True},
     'UPDATE_DB': {'type': 'boolean', 'required': False, 'default': False},
     'EXTRA_ARGS': {'type': 'string', 'required': False, 'default': ''},
     }
