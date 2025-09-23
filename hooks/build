@@ -2,6 +2,6 @@
 
 docker build \
     --build-arg UPDATE_DB=$UPDATE_DB \
-    --build-arg NVD_API_FEED=$NVD_API_FEED \ 
+    --build-arg NVD_API_FEED=$NVD_API_FEED \
     -f $DOCKERFILE_PATH \
     -t $IMAGE_NAME .
