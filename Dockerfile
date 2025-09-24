@@ -10,13 +10,12 @@ RUN cd / && wget -P / https://bitbucket.org/bitbucketpipelines/bitbucket-pipes-t
 # Install python environment
 USER root
 ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3-dev gcc cargo libressl-dev musl-dev libffi-dev
-RUN python3 -m ensurepip
+RUN apk add --update --no-cache python3 py3-pip python3-dev gcc cargo libressl-dev musl-dev libffi-dev
 
 # Install python requirements
 USER 1000
 COPY requirements.txt /
-RUN python3 -m pip install --no-cache-dir -r /requirements.txt
+RUN python3 -m pip install --no-cache-dir --break-system-packages -r /requirements.txt
 
 # Initialise OWASP DB if UPDATE_DB = true
 # https://github.com/jeremylong/DependencyCheck/blob/2d5fbd9719ddd55a59aea8c234c11e43eaafe26d/Dockerfile#L50
