@@ -1,7 +1,7 @@
 FROM owasp/dependency-check:12.2.1
 
 ARG UPDATE_DB
-ARG NVD_API_FEED
+ARG NVD_API_KEY
 
 USER root
 RUN apk add wget bash
@@ -18,8 +18,7 @@ COPY requirements.txt /
 RUN python3 -m pip install --no-cache-dir --break-system-packages -r /requirements.txt
 
 # Initialise OWASP DB if UPDATE_DB = true
-# https://github.com/jeremylong/DependencyCheck/blob/2d5fbd9719ddd55a59aea8c234c11e43eaafe26d/Dockerfile#L50
-RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_FEED:+--nvdDatafeed=${NVD_API_FEED}}
+RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY}}
 
 COPY pipe /
 USER root
