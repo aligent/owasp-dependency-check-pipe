@@ -28,7 +28,7 @@ Add the following your `bitbucket-pipelines.yml` file:
 | OSSINDEX_PASSWORD      | (Optional) Provide OSS Index Password. Disregarded when DISABLE_OSSINDEX is set True |
 | NVD_API_KEY          | (Optional) Provide an API key for NVD. |
 | OUTPUT_PATH           | (Optional) Path to output test results. |
-| UPDATE_DB             | (Optional) Pass `true` if that database should be updated. Defaults to false |
+| UPDATE_DB             | (Optional) Set to `false` to skip database update. Updates when unset or `true`. |
 | EXTRA_ARGS            | (Optional) Extra arguments to pass to dependency-check. i.e `--disableRetireJS` |
 
 ⚠️ For npm/yarn projects, you should provide the directory containing `package-lock.json` or `yarn.lock` and `node-modules` as `SCAN_PATH`.

@@ -17,7 +17,7 @@ USER 1000
 COPY requirements.txt /
 RUN python3 -m pip install --no-cache-dir --break-system-packages -r /requirements.txt
 
-# Initialise OWASP DB if UPDATE_DB = true
+# Initialise OWASP DB if UPDATE_DB != false
 RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY}}
 
 COPY pipe /
