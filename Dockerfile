@@ -18,8 +18,8 @@ COPY requirements.txt /
 RUN python3 -m pip install --no-cache-dir --break-system-packages -r /requirements.txt
 
 # Initialise OWASP DB if UPDATE_DB = true
-# nvdApiDelay of 700ms prevents 429 rate limit errors from NVD API, where "50 requests in a rolling 30 second window" rule is applied.
-RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY} --nvdApiDelay=700}
+# nvdApiDelay of 600ms prevents 429 rate limit errors from NVD API, where "50 requests in a rolling 30 second window" rule is applied.
+RUN ! ${UPDATE_DB} || /usr/share/dependency-check/bin/dependency-check.sh --updateonly ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY} --nvdApiDelay=600}
 
 COPY pipe /
 USER root
