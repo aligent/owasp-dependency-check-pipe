@@ -1,0 +1,36 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - feature/DO-2030_image_build_migration
+  schedule:
+    # Weekly rebuild to update NVD database (Sundays at 2am UTC)
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+    inputs:
+      force_db_update:
+        description: 'Force NVD database update (ignore cache)'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: docker-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    uses: aligent/workflows/.github/workflows/docker-build.yml@feature/DO-2030_docker_image_build
+    with:
+      image-name: aligent/owasp-dependency-check
+      dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
+      timeout-minutes: 360
+      build-args: |
+        UPDATE_DB=true
+      no-cache: ${{ github.event_name == 'schedule' || inputs.force_db_update == true }}
+    secrets:
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+      build-secrets: |
+        NVD_API_KEY=${{ secrets.NVD_API_KEY }}
