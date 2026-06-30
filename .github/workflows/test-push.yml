@@ -1,0 +1,17 @@
+name: Test Docker Hub Push
+
+on:
+  push:
+    branches:
+      - test/dockerhub-push
+  workflow_dispatch:
+
+jobs:
+  test-push:
+    uses: aligent/workflows/.github/workflows/docker-build.yml@feature/DO-2030_docker_image_build
+    with:
+      image-name: aligent/christest
+      dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
+      dockerfile: Dockerfile.test
+    secrets:
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
