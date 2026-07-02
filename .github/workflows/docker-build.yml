@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   build-and-push:
-    uses: aligent/workflows/.github/workflows/docker-build.yml@feature/DO-2030_docker_image_build
+    uses: aligent/workflows/.github/workflows/docker-build.yml@main
     with:
       image-name: aligent/owasp-dependency-check-pipe
       dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
