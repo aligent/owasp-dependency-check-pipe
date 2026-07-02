@@ -29,7 +29,7 @@ jobs:
       timeout-minutes: 360
       build-args: |
         UPDATE_DB=true
-      no-cache: ${{ github.event_name == 'schedule' || inputs.force_db_update == true }}
+      no-cache: ${{ inputs.force_db_update == true }}
     secrets:
       dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
       build-secrets: |
