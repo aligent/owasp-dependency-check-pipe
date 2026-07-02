@@ -1,0 +1,26 @@
+# Bootstrap Dockerfile for initial NVD database seed image.
+#
+# Use this to create the first seed image with a full NVD database download.
+# Once pushed, the main Dockerfile uses self-referential builds for fast delta updates.
+#
+# This build takes 4-10 hours depending on NVD API load.
+#
+# Build (on local machine - no GitHub Actions time limit):
+#   docker build -f Dockerfile.db \
+#     --platform linux/amd64 \
+#     --build-arg NVD_API_KEY=$NVD_API_KEY \
+#     -t aligent/owasp-dependency-check-pipe:latest .
+#
+# Push:
+#   docker push aligent/owasp-dependency-check-pipe:latest
+#
+# After the seed is pushed, daily GitHub Actions builds will do fast delta updates.
+
+FROM owasp/dependency-check:12.2.1
+
+ARG NVD_API_KEY
+
+# Download full NVD database.
+# nvdApiDelay of 1000ms and nvdApiResultsPerPage of 1000 prevent 429 rate limit errors from NVD API.
+RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly \
+    ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY}} --nvdApiDelay=1000 --nvdApiResultsPerPage=1000
