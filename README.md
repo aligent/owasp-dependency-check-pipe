@@ -41,4 +41,27 @@ The following command with world-writable `test-results` directory under project
 docker run --rm -e OUTPUT_PATH="/tmp/test-results/" -e CVSS_FAIL_LEVEL=1 -e SCAN_PATH=./composer.lock -v $PWD:/build --workdir=/build aligent/owasp-dependency-check-pipe
 ```
 
-Commits published to the `main` branch  will trigger an automated build.
+## CI/CD
+
+Docker images are built and pushed to Docker Hub via GitHub Actions. The workflow:
+
+- Triggers on pushes to `main` branch
+- Runs weekly (Sundays at 2am UTC) to update the NVD database
+- Can be manually triggered with optional cache bypass
+
+### Required Secrets
+
+Configure the following secrets in your GitHub repository:
+
+| Secret | Description |
+|--------|-------------|
+| `DOCKERHUB_USERNAME` | Docker Hub username |
+| `DOCKERHUB_TOKEN` | Docker Hub access token |
+| `NVD_API_KEY` | NVD API key for faster database updates |
+
+### Caching
+
+The workflow uses GitHub Actions cache to store Docker build layers, significantly reducing build times for subsequent builds. The NVD database layer is cached and reused unless:
+
+- The scheduled weekly rebuild runs (forces fresh database download)
+- Manual trigger with "Force NVD database update" option enabled
