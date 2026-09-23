@@ -16,7 +16,7 @@
 #
 # After the seed is pushed, daily GitHub Actions builds will do fast delta updates.
 
-FROM owasp/dependency-check:12.2.1
+FROM owasp/dependency-check:13.0.0
 
 ARG NVD_API_KEY
 

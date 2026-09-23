@@ -46,7 +46,7 @@ docker run --rm -e OUTPUT_PATH="/tmp/test-results/" -e CVSS_FAIL_LEVEL=1 -e SCAN
 Docker images are built and pushed to Docker Hub via GitHub Actions. The workflow:
 
 - Triggers on pushes to `main` branch
-- Runs weekly (Sundays at 2am UTC) to update the NVD database
+- Runs daily (2am UTC) to update the NVD database
 - Can be manually triggered with optional cache bypass
 
 ### Required Secrets
@@ -61,7 +61,4 @@ Configure the following secrets in your GitHub repository:
 
 ### Caching
 
-The workflow uses GitHub Actions cache to store Docker build layers, significantly reducing build times for subsequent builds. The NVD database layer is cached and reused unless:
-
-- The scheduled weekly rebuild runs (forces fresh database download)
-- Manual trigger with "Force NVD database update" option enabled
+The workflow uses GitHub Actions cache to store Docker build layers, significantly reducing build times for subsequent builds. The scheduled daily rebuild reuses the cached NVD database layer and applies delta updates. A full, uncached database download only happens on a manual trigger with the "Force NVD database update" option enabled.
