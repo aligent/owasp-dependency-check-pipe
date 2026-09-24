@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/DO-2030_image_build_migration
   schedule:
     # Daily rebuild to keep NVD database fresh (delta updates)
     - cron: '0 2 * * *'
