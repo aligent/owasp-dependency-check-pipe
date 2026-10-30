@@ -7,6 +7,7 @@ FROM aligent/owasp-dependency-check-pipe:latest AS previous
 ARG UPDATE_DB
 
 USER root
+RUN apk update && apk upgrade
 RUN apk add wget bash
 RUN cd / && wget -P / https://bitbucket.org/bitbucketpipelines/bitbucket-pipes-toolkit-bash/raw/0.4.0/common.sh
 
@@ -50,7 +51,7 @@ ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     ODC_NAME="dependency-check-docker" \
     DOTNET_RUNNING_IN_CONTAINER=true \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true \
-    DOTNET_VERSION=8.0.25 \
+    DOTNET_VERSION=8.0.33 \
     PYTHONUNBUFFERED=1 \
     user="dependencycheck"
 
