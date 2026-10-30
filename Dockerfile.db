@@ -18,9 +18,12 @@
 
 FROM owasp/dependency-check:13.0.0
 
-ARG NVD_API_KEY
+USER root
+RUN  apk update && apk upgrade nodejs
+USER 1000
 
 # Download full NVD database.
 # nvdApiDelay of 1000ms and nvdApiResultsPerPage of 1000 prevent 429 rate limit errors from NVD API.
-RUN /usr/share/dependency-check/bin/dependency-check.sh --updateonly \
-    ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY}} --nvdApiDelay=1000 --nvdApiResultsPerPage=1000
+ARG  NVD_API_KEY
+RUN  /usr/share/dependency-check/bin/dependency-check.sh --updateonly \
+     ${NVD_API_KEY:+--nvdApiKey=${NVD_API_KEY}} --nvdApiDelay=1000 --nvdApiResultsPerPage=1000
