@@ -10,7 +10,7 @@ Add the following your `bitbucket-pipelines.yml` file:
       - step:
           name: "Code Standards check"
           script:
-            - pipe: docker://aligent/owasp-dependency-check-pipe
+            - pipe: docker://ghcr.io/aligent/owasp-dependency-check-pipe
               variables:
                 SCAN_PATH: "./composer.lock"
                 CVSS_FAIL_LEVEL: "1"
@@ -38,12 +38,12 @@ Add the following your `bitbucket-pipelines.yml` file:
 The following command with world-writable `test-results` directory under project root can be used to invoke the pipe locally:
 
 ```bash
-docker run --rm -e OUTPUT_PATH="/tmp/test-results/" -e CVSS_FAIL_LEVEL=1 -e SCAN_PATH=./composer.lock -v $PWD:/build --workdir=/build aligent/owasp-dependency-check-pipe
+docker run --rm -e OUTPUT_PATH="/tmp/test-results/" -e CVSS_FAIL_LEVEL=1 -e SCAN_PATH=./composer.lock -v $PWD:/build --workdir=/build ghcr.io/aligent/owasp-dependency-check-pipe
 ```
 
 ## CI/CD
 
-Docker images are built and pushed to Docker Hub via GitHub Actions. The workflow:
+Docker images are built and pushed to GitHub Container Registry (`ghcr.io/aligent/owasp-dependency-check-pipe`) via GitHub Actions. The workflow:
 
 - Triggers on pushes to `main` branch
 - Runs daily (2am UTC) to update the NVD database
@@ -55,8 +55,6 @@ Configure the following secrets in your GitHub repository:
 
 | Secret | Description |
 |--------|-------------|
-| `DOCKERHUB_USERNAME` | Docker Hub username |
-| `DOCKERHUB_TOKEN` | Docker Hub access token |
 | `NVD_API_KEY` | NVD API key for faster database updates |
 
 ### Caching

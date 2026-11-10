@@ -19,17 +19,19 @@ concurrency:
   group: docker-build-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-and-push:
     uses: aligent/workflows/.github/workflows/docker-build.yml@main
     with:
       image-name: aligent/owasp-dependency-check-pipe
-      dockerhub-username: ${{ vars.DOCKERHUB_USERNAME }}
       timeout-minutes: 360
       build-args: |
         UPDATE_DB=true
       no-cache: ${{ inputs.force_db_update == true }}
     secrets:
-      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
       build-secrets: |
         NVD_API_KEY=${{ secrets.NVD_API_KEY }}
