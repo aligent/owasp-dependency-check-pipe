@@ -9,7 +9,6 @@ ARG UPDATE_DB
 USER root
 RUN apk update && apk upgrade
 RUN apk add wget bash
-RUN cd / && wget -P / https://bitbucket.org/bitbucketpipelines/bitbucket-pipes-toolkit-bash/raw/0.4.0/common.sh
 
 # Install python environment
 USER root
