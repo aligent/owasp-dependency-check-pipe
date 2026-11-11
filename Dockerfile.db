@@ -9,10 +9,10 @@
 #   docker build -f Dockerfile.db \
 #     --platform linux/amd64 \
 #     --build-arg NVD_API_KEY=$NVD_API_KEY \
-#     -t aligent/owasp-dependency-check-pipe:latest .
+#     -t ghcr.io/aligent/owasp-dependency-check-pipe:latest .
 #
 # Push:
-#   docker push aligent/owasp-dependency-check-pipe:latest
+#   docker push ghcr.io/aligent/owasp-dependency-check-pipe:latest
 #
 # After the seed is pushed, daily GitHub Actions builds will do fast delta updates.
 
