@@ -2,7 +2,7 @@
 # Self-referential: pulls previous build which contains recent NVD database.
 # Delta updates are fast (<7 days). Schedule builds every few days to stay fresh.
 # Bootstrap: first build requires full DB download (~4-10 hours).
-FROM aligent/owasp-dependency-check-pipe:latest AS previous
+FROM ghcr.io/aligent/owasp-dependency-check-pipe:latest AS previous
 
 ARG UPDATE_DB
 
